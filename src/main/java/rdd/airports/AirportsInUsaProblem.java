@@ -11,7 +11,9 @@ public class AirportsInUsaProblem {
     public static final String COMMA_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
 
     public static void main(String[] args) {
-        SparkConf conf = new SparkConf().setAppName("AirportsInUsaProblem").setMaster("local[*]");
+        SparkConf conf = new SparkConf()
+                .setAppName("AirportsInUsaProblem")
+                .setMaster("local[*]");
         JavaSparkContext sc = new JavaSparkContext(conf);
         JavaRDD<String> airports = sc.textFile("In/airports.text",3);
         var airportsInUSA = airports.filter(line -> line.split(COMMA_DELIMITER)[3].equals("\"United States\""));

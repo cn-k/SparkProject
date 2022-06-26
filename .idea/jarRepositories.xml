@@ -7,6 +7,26 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="sara-snapshots" />
+      <option name="name" value="sara-snapshots" />
+      <option name="url" value="http://am-wfa-prd.asml.com:8080/nexus/content/repositories/sara-snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sara-releases" />
+      <option name="name" value="sara-releases" />
+      <option name="url" value="http://am-wfa-prd.asml.com:8080/nexus/content/repositories/sara-releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://am-wfa-prd.asml.com:8080/nexus/content/groups/lis_analytics" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="lis-analytics" />
+      <option name="name" value="lis-analytics" />
+      <option name="url" value="http://am-wfa-prd.asml.com:8080/nexus/content/groups/lis_analytics" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
