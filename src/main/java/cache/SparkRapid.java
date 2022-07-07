@@ -6,29 +6,38 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.ArrayList;
+
 public class SparkRapid {
-    //public static final String EXPECTED_MEAN_3_STDDEV_SPARK_SQL = "SELECT ABS(AVG(_c0)) + 3 * NVL(STDDEV(_c0), 0) from test_table";
     private static final String EXPECTED_MEAN_3_STDDEV_SPARK_SQL = "SELECT ABS(AVG(`_c0`)) + 3 * NVL(STDDEV(`_c0`), 0) as stddev" + System.lineSeparator() + "FROM `test_table`";
 
-
     public static void main(String[] args) {
+        ArrayList<Long> list = new ArrayList<>();
         StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        SparkSession spark = SparkSession
-                .builder()
-                /*
-                .config("spark.plugins","com.nvidia.spark.SQLPlugin")
-                .config("spark.rapids.sql.incompatibleOps.enabled", true)
-                //.config("spark.rapids.force.caller.classloader", false)
-                .config("spark.executor.resource.gpu.amount", 100)
-                .config("spark.task.resource.gpu.amount", 0.5)
-            */
-                .master("local[*]").getOrCreate();
+        for (int i=0; i<10; i++){
+            stopWatch.start();
+            SparkSession spark = SparkSession
+                    .builder()
+                    .getOrCreate();
 
-        Dataset<Row> ds = spark.read().csv("/home/cnk/spark/statisticsData.csv").repartition(100, new Column("_c0"));
-        ds.createOrReplaceTempView("test_table");
-        spark.sql(EXPECTED_MEAN_3_STDDEV_SPARK_SQL).show() ;
-        stopWatch.stop();
-        System.out.println(stopWatch.getTime());
+            Dataset<Row> ds = spark.read().csv("/home/cnk/spark/statisticsData.csv").repartition(100, new Column("_c0"));
+            ds.createOrReplaceTempView("test_table");
+            var res = spark.sql(EXPECTED_MEAN_3_STDDEV_SPARK_SQL);
+            res.write().mode("overwrite").format("noop").save();
+            stopWatch.stop();
+            var duration = stopWatch.getTime();
+            list.add(duration);
+            stopWatch.reset();
+        }
+        var average = list.stream().reduce((x,y) -> x+y).get() / list.size();
+        for (int i  = 1; i<=10 ; i++){
+            System.out.println("iteration " + i + ": " + list.get(i-1));
+        }
+        System.out.println("average time is: " + average);
+        try {
+            Thread.sleep(1000000000000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
